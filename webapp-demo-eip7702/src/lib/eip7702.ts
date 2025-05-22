@@ -1,4 +1,4 @@
-import { ethers, JsonRpcSigner } from "ethers";
+import { ethers, JsonRpcProvider, JsonRpcSigner, Wallet } from "ethers";
 
 import helperApproveAndSwap from "./HelperApproveAndSwap.json";
 import { populateAndSignAuthAddress } from "./authorization-signer";
@@ -73,10 +73,18 @@ export async function runTransaction(
     },
     { common: commonWithCustomChainId }
   );
-  // signer.sendTransaction()
-  const txHash = await window_ethereum.request({
-    method: 'eth_sendTransaction',
-    params: [tx1],
-  });
-  await txHash.wait();
+  // tx1.contractCode = helperApproveAndSwap.deployedBytecode.object;
+  const SECRET_KEY =
+    "0x92db14e403b83dfe3df233f83dfa3a0d7096f21ca9b0d6d6b8d88b2b4ec1564e";
+  const sk_buffer = hexToBytes(SECRET_KEY);
+
+  try {
+    const signed_tx = tx1.sign(sk_buffer);
+    console.log(signed_tx.toJSON());
+    const provider1 = new JsonRpcProvider("http://127.0.0.1:8545");
+    const wallet = new Wallet(SECRET_KEY, provider);
+    await wallet.sendTransaction("eth_sendRawTransaction", [signed_tx.serialize()]);
+  } catch (error) {
+    console.log(error);
+  }
 }
