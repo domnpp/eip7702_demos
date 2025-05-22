@@ -27,7 +27,7 @@ contract Deploy is Script {
             "/webapp-demo-eip7702/src/lib/contracts.json"
         );
         // console.log(filePath);
-        // vm.writeJson(json, filePath);
+        vm.writeJson(json, filePath);
         string memory artifacts_helper = string.concat(
             vm.projectRoot(),
             "/out/HelperApproveAndSwap.sol/HelperApproveAndSwap.json"
@@ -50,3 +50,8 @@ contract Deploy is Script {
         // );
     }
 }
+
+// (6) 0x976EA74026E726554dB657fA54763abd0C3a0aa9 (10000.000000000000000000 ETH)
+
+
+// (6) 0x92db14e403b83dfe3df233f83dfa3a0d7096f21ca9b0d6d6b8d88b2b4ec1564e

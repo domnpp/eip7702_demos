@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { BrowserProvider, ethers, JsonRpcSigner } from "ethers";
 import deployed from "../lib/contracts.json";
+import { runTransaction } from "@/lib/eip7702";
 
 const ABI_ERC20 = [
   "error ERC20InsufficientBalance(address sender, uint256 balance, uint256 needed)",
@@ -16,7 +17,14 @@ const ABI_ERC20 = [
 ];
 
 const ABI0 = ABI_ERC20.concat([
-  "function mint(address to, uint256 amount) external"
+  "function mint(address to, uint256 amount) external",
+  "error ERC20InsufficientBalance(address sender, uint256 balance, uint256 needed)",
+  "error ERC20InvalidSender(address sender)",
+  "error ERC20InvalidReceiver(address receiver)",
+  "error ERC20InsufficientAllowance(address spender, uint256 allowance, uint256 needed)",
+  "error ERC20InvalidApprover(address approver)",
+  "error ERC20InvalidSpender(address spender)",
+  "function balanceOf(address account) external view returns (uint256)"
 ]);
 const ABI1 = ABI_ERC20.concat([
   "function reward(address to, uint256 amount) external"
@@ -33,7 +41,7 @@ export default function Home() {
   const [account, setAccount] = useState<string>("");
   const [tokensCa, setTokensCa] = useState<string[]>([]);
   const [choice_0, setChoice0] = useState<number>(0);
-  const [choice_1, setChoice1] = useState<number>(0);
+  const [choice_1, setChoice1] = useState<number>(3);
   // const [payTransaction, setPayTransaction] = useState<any>(null);
 
   useEffect(() => {
@@ -72,7 +80,7 @@ export default function Home() {
     if (typeof window.ethereum !== "undefined") {
       const provider = new ethers.BrowserProvider(window.ethereum);
       // Should throw if issues.
-      provider.send("eth_requestAccounts", []);
+      await provider.send("eth_requestAccounts", []);
       // Set fake string to trigger useEffect that will get the actual value.
       setAccount("⏳");
     } else {
@@ -88,7 +96,8 @@ export default function Home() {
           setBalance0(Number(n));
         });
       },
-      (error: any) => {
+      async (error: any) => {
+        console.log("nonce: ", await g_s.getNonce());
         alert("Mint call failed! ");
         console.log("Mint call failed! ", error);
       }
@@ -96,6 +105,9 @@ export default function Home() {
   };
 
   const _onClickSwap = () => {
+    runTransaction(g_p, account, tokensCa[0], tokensCa[1], choice_1, g_ca1, g_s, window.ethereum);
+  };
+  const _onClickSwap_legacy = () => {
     g_ca1.reward(account, choice_1).then(
       async (tx: any) => {
         await tx.wait();
