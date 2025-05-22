@@ -4,6 +4,7 @@ out = "out"
 libs = ["lib"]
 allow_paths = ["./webapp-demo-eip7702/lib/contracts.json"]
 fs_permissions = [{ access = "read-write", path = "./webapp-demo-eip7702/src/lib"}, { access = "read-write", path = "./out/HelperApproveAndSwap.sol/HelperApproveAndSwap.json"}]
+evm_version = "prague"
 
 optimizer = true
 optimizer_runs = 1130

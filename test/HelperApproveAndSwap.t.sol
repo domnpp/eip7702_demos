@@ -20,7 +20,7 @@ contract HelperApproveAndSwapTest is Test {
     }
 
     function testCall() public {
-        runner.reward(address(s), address(r), 16);
+        runner.batchReward(address(s), address(r), 16);
         assertEq(r.balanceOf(address(runner)), 16);
     }
 }
