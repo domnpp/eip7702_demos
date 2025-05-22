@@ -6,6 +6,12 @@ allow_paths = ["./webapp-demo-eip7702/lib/contracts.json"]
 fs_permissions = [{ access = "read-write", path = "./webapp-demo-eip7702/src/lib"}, { access = "read-write", path = "./out/HelperApproveAndSwap.sol/HelperApproveAndSwap.json"}]
 evm_version = "prague"
 
+# Note: does not work like that!
+# Use cancun (or earlier) to demonstrate how it's impossible to successfully run our tests before Pectra update.
+# evm_version = "shanghai"
+
+# Our tests work with istanbul or newer.
+
 optimizer = true
 optimizer_runs = 1130
 

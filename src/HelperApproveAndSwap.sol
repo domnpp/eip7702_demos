@@ -5,6 +5,9 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
+// import {console2} from "forge-std/Test.sol";
+
+// Run with anvil --hardfork prague to maybe let these features work in browsers.
 
 interface IDemo7702 {
     function reward(address to, uint256 amount) external;
@@ -32,7 +35,9 @@ contract HelperApproveAndSwap {
         address reward,
         uint256 amount
     ) external {
+        // console2.log("Caller: ");
         IERC20 c = IERC20(currency);
+        // console2.log(address(this));
         c.approve(reward, amount);
         IDemo7702(reward).reward(address(this), amount);
     }
@@ -87,6 +92,8 @@ contract HelperApproveAndSwap {
      */
     function execute(Call[] calldata calls) external payable {
         require(msg.sender == address(this), "Invalid authority");
+        // console2.log("Execute ... I am");
+        // console2.log(address(msg.sender));
         _executeBatch(calls);
     }
 
@@ -99,6 +106,8 @@ contract HelperApproveAndSwap {
         nonce++; // Increment nonce to protect against replay attacks
 
         for (uint256 i = 0; i < calls.length; i++) {
+            // console2.log("In loop _executeCall", i);
+            // console2.log(address(this));
             _executeCall(calls[i]);
         }
 
@@ -116,6 +125,6 @@ contract HelperApproveAndSwap {
     }
 
     // Allow the contract to receive ETH (e.g. from DEX swaps or other transfers).
-    fallback() external payable {}
-    receive() external payable {}
+    // fallback() external payable {}
+    // receive() external payable {}
 }
