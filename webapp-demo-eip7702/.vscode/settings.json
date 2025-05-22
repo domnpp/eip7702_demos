@@ -1,0 +1,27 @@
+{
+    "[javascript]": {
+        "files.autoSave": "onFocusChange",
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.autoClosingBrackets": "beforeWhitespace",
+        "editor.autoIndent": "advanced",
+        "editor.formatOnType": true,
+        "editor.formatOnPaste": false
+    },
+    "[typescript]": {
+        "files.autoSave": "onFocusChange",
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.autoClosingBrackets": "beforeWhitespace",
+        "editor.formatOnType": true,
+        "editor.autoIndent": "advanced",
+        "editor.formatOnPaste": false
+    },
+    "[typescriptreact]": {
+        "files.autoSave": "onFocusChange",
+        "editor.autoIndent": "advanced",
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.autoClosingBrackets": "beforeWhitespace",
+        "editor.formatOnType": true,
+        "editor.formatOnPaste": false
+    },
+    "prettier.trailingComma": "none",
+}
