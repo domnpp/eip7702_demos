@@ -5,7 +5,7 @@ interface IDemo7702 {
 }
 
 contract HelperApproveAndSwap {
-    function reward(
+    function batchReward(
         address currency,
         address reward,
         uint256 amount

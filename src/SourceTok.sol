@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract SourceTok is ERC20 {
     constructor() ERC20("DemoToken0", "DMT") {
+     _mint(0x976EA74026E726554dB657fA54763abd0C3a0aa9, 4);
     }
 
     function mint(address to, uint256 amount) external {
