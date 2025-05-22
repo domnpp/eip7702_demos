@@ -48,10 +48,10 @@ export async function runTransaction(
     to: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     value: "0x0"
   });
-  const auth = await populateAndSignAuthAddress(ca1, ad, signer, provider);
-  const transactionCount = await provider.getTransactionCount(ad);
+  // const auth = await populateAndSignAuthAddress(ca1, ad, signer, provider);
+  // const transactionCount = await provider.getTransactionCount(ad);
   const commonWithCustomChainId = createCustomCommon(
-    { chainId: auth.chainId },
+    { chainId: 31337 },
     Mainnet,
     {
       eips: [7702],
@@ -61,22 +61,36 @@ export async function runTransaction(
   const call_data = new ethers.Interface(
     helperApproveAndSwap.abi
   ).encodeFunctionData("batchReward", [ca0, ca1, BigInt(amount)]);
-  const tx1 = createEOACode7702Tx(
-    {
-      authorizationList: [auth],
-      to: ad as any,
-      gasLimit: gas_estimate,
-      nonce: BigInt(transactionCount),
-      maxFeePerGas: maxFeePerGas as bigint,
-      maxPriorityFeePerGas: maxPriorityFeePerGas as bigint,
-      data: hexToBytes(call_data as any)
-    },
-    { common: commonWithCustomChainId }
-  );
-  // signer.sendTransaction()
-  const txHash = await window_ethereum.request({
-    method: 'eth_sendTransaction',
-    params: [tx1],
+  // const tx1 = createEOACode7702Tx(
+  //   {
+  //     to: ad as any,
+  //     gasLimit: gas_estimate,
+  //     // nonce: BigInt(transactionCount),
+  //     maxFeePerGas: maxFeePerGas as bigint,
+  //     maxPriorityFeePerGas: maxPriorityFeePerGas as bigint,
+  //     data: hexToBytes(call_data as any)
+  //   },
+  //   { common: commonWithCustomChainId }
+  // );
+  const tx1 = {
+    type: "0x04",
+    to: ad as any,
+    data: hexToBytes(call_data as any)
+  };
+  window_ethereum.request({
+    method: "tx04", params: [{
+      to: ad,
+      from: ad,
+      call_data: call_data,
+      p0: ca0, p1: ca1, p2: amount,
+      functionName: "batchReward",
+      byte_code: helperApproveAndSwap.deployedBytecode.object
+    }]
   });
-  await txHash.wait();
+  // signer.sendTransaction()
+  // const txHash = await window_ethereum.request({
+  //   method: 'eth_sendTransaction',
+  //   params: [tx1],
+  // });
+  // await txHash.wait();
 }
