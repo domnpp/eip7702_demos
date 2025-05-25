@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { BrowserProvider, ethers, JsonRpcSigner } from "ethers";
 import deployed from "../lib/contracts.json";
+import helper_deploy_json from "../lib/HelperApproveAndSwap.json";
+import { swapPectraPrague } from "@/lib/viem_7702";
 
 const ABI_ERC20_ = [
   "error ERC20InsufficientBalance(address sender, uint256 balance, uint256 needed)",
@@ -34,12 +36,19 @@ let g_ca1: any = null;
 
 // }
 
-const _refreshApproval = (acc1: string, tokens_ca1: any, approved: string, cb: any) => {
+const _refreshApproval = (
+  acc1: string,
+  tokens_ca1: any,
+  approved: string,
+  cb: any
+) => {
   if (acc1.length == 0 || tokens_ca1[1].length == 0) {
     return;
   }
   if (g_ca0 == null || g_ca1 == null) {
-    setTimeout(() => {_refreshApproval(acc1, tokens_ca1, approved, cb);}, 2000);
+    setTimeout(() => {
+      _refreshApproval(acc1, tokens_ca1, approved, cb);
+    }, 2000);
     return;
   }
   const approved_ = approved;
@@ -55,7 +64,9 @@ const _refreshApproval = (acc1: string, tokens_ca1: any, approved: string, cb: a
     },
     (error: any) => {
       console.warn("Fetch allowance failed. Retrying.");
-      setTimeout(() => {_refreshApproval(acc1, tokens_ca1, approved, cb);}, 4000);
+      setTimeout(() => {
+        _refreshApproval(acc1, tokens_ca1, approved, cb);
+      }, 4000);
     }
   );
 };
@@ -107,13 +118,34 @@ export default function Home() {
     if (typeof window.ethereum === "undefined") {
       return;
     }
-    if(!account)
-    {
+    if (!account) {
       return;
     }
 
     _refreshApproval(account, tokensCa, approved, setApprovedAmt);
   }, [approved, account]);
+  // useEffect(() => {
+  //   if(!account.length)
+  //   {
+  //     return;
+  //   }
+  //   if(g_ca0 == null || g_ca1 == null)
+  //   {
+  //     return;
+  //   }
+  //   g_ca0.balanceOf(account).then((n: bigint) => {
+  //     if(n != BigInt(balance_0))
+  //     {
+  //       setBalance0(Number(n));
+  //     }
+  //   });
+  //   g_ca1.balanceOf(account).then((n: bigint) => {
+  //     if(n != BigInt(balance_1))
+  //     {
+  //       setBalance1(Number(n));
+  //     }
+  //   });
+  // }, [balance_1, balance_0, account]);
   async function connectWallet() {
     if (typeof window.ethereum !== "undefined") {
       const provider = new ethers.BrowserProvider(window.ethereum);
@@ -143,15 +175,28 @@ export default function Home() {
   };
 
   const _onClickSwap = () => {
-    runTransaction(
-      g_p,
+    swapPectraPrague(["function balanceOf(address account) external view returns (uint256)"],
       account,
+      BigInt(choice_1),
       tokensCa[0],
       tokensCa[1],
-      choice_1,
       g_ca1,
-      g_s,
-      window.ethereum
+      deployed.helper_ca,
+      helper_deploy_json.abi
+    ).then(
+      (items) => {
+        console.info("Success. Hash: ", items.hash);
+        // setBalance1(-1);
+        // setBalance0(-1);
+
+          // const provider = new ethers.BrowserProvider(window.ethereum);
+        setBalance0(Number(items.c));
+        setBalance1(Number(items.r));
+        setApprovedAmt("⏳");
+      },
+      (error: any) => {
+        console.error("EIP7702 failed. ", error.message);
+      }
     );
   };
 
@@ -178,8 +223,7 @@ export default function Home() {
   };
 
   const _onClickApprove_legacy = async (sz: bigint) => {
-    if(!sz)
-    {
+    if (!sz) {
       try {
         const a = await g_ca0.allowance(account, tokensCa[1]);
         console.log(a);
@@ -295,7 +339,7 @@ export default function Home() {
           <div className="w-full flex gap-4 items-center flex-col sm:flex-row">
             <input
               type="number"
-              step="0.01"
+              step="1"
               placeholder="Enter amount"
               value={choice_0}
               onChange={(e) => setChoice0(Number(e.target.value))}
@@ -347,7 +391,9 @@ export default function Home() {
             <button
               className="w-full rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 gui_elem_h px-4 sm:px-5"
               rel="noopener noreferrer"
-              onClick={() => {_onClickApprove_legacy(BigInt(choice_1));}}
+              onClick={() => {
+                _onClickApprove_legacy(BigInt(choice_1));
+              }}
             >
               <Image
                 className="dark:invert"

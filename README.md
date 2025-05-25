@@ -1,3 +1,13 @@
+# EIP 7702 demo
+
+The project is designed to run in Docker, using VScode dev container. It should run
+out of the box, but feel free to adapt it to your needs and make the necessary
+modifications to get it to run with the installed Foundry, without Docker.
+
+The subfolder webapp-demo-eip7702 is the web application that we ran outside
+of Docker (directly on the system) with Node.js and npm. If preferred, it should
+also run in Docker without any issues, the necessary software is installed.
+
 ## Foundry
 
 **Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
