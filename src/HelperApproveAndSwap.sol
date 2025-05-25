@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
-// import {console2} from "forge-std/Test.sol";
+// import {console} from "forge-std/Test.sol";
 
 // Run with anvil --hardfork prague to maybe let these features work in browsers.
 
@@ -36,9 +36,13 @@ contract HelperApproveAndSwap {
         uint256 amount
     ) external {
         // console2.log("Caller: ");
+        // console.log("BatchRewardCall");
         IERC20 c = IERC20(currency);
         // console2.log(address(this));
         c.approve(reward, amount);
+        // console.log("I, ",address(this), "Approve: ", reward);
+        // console.log("Can now spend: ", amount, " of: ", currency);
+        // console.log("Can now spend: ", amount, " of: ", currency);
         IDemo7702(reward).reward(address(this), amount);
     }
 

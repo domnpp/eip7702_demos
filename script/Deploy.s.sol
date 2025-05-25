@@ -4,6 +4,7 @@ pragma solidity ^0.8.30;
 import "forge-std/Script.sol";
 import "forge-std/StdJson.sol";
 import "../src/SourceTok.sol";
+import "../src/HelperApproveAndSwap.sol";
 
 contract Deploy is Script {
     // using stdJson for string;
@@ -13,12 +14,15 @@ contract Deploy is Script {
 
         SourceTok st = new SourceTok();
         RewardTok reward = new RewardTok(address(st));
+        HelperApproveAndSwap h = new HelperApproveAndSwap();
         vm.stopBroadcast();
 
         string memory json = '{"SourceTok":"';
         json = string.concat(json, vm.toString(address(st)));
         json = string.concat(json, '","RewardTok":"');
         json = string.concat(json, vm.toString(address(reward)));
+        json = string.concat(json, '","helper_ca":"');
+        json = string.concat(json, vm.toString(address(h)));
         json = string.concat(json, '"}');
 
         // console.log(vm.projectRoot());
